@@ -2,14 +2,14 @@ module UserModelHasAccount
   def self.included kls
     kls.send :belongs_to, :account, :counter_cache => true
     kls.send :belongs_to, :account_type
-    kls.send :before_validation, :set_account_type
+    kls.send :before_validation, :denormalize_account_type
     kls.send :validate, :validate_account_has_space
     kls.send :after_create, :create_account_if_account_type_without_account
     kls.send :named_scope, :account_administrator, {:conditions => {:account_administrator => true}}
   end
 
   private
-  def set_account_type
+  def denormalize_account_type
     # force if account has changed
     if changes['account_id'] and account
       self.account_type = account.account_type
@@ -32,9 +32,19 @@ module UserModelHasAccount
   def create_account_if_account_type_without_account
     return true if account
     return true unless account_type
+
+    # these get saved in the next action, but do them here so they are cached
+    # in the local instance
     self.account = Account.create(:account_type => account_type)
     self.account_administrator = true
-    save
+
+    self.class.update_all(
+      # update
+      {:account_id => account.id, :account_administrator => true},
+      # where
+      {:id => id}
+    )
   end
+
 
 end
