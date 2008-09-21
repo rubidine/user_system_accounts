@@ -1,0 +1,6 @@
+UserSystemHasAccounts
+======================
+
+Requires:
+  user_system
+  fixed_point_field

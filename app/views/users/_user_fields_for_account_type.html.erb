@@ -1,0 +1,8 @@
+<tr>
+  <th>
+    Account Type
+  </th>
+  <td>
+    <%= select :user, :account_type_id, AccountType.public.by_cost.find(:all).collect{|x| [x.name, x.id]}, :selected => params[:account_type_id] %>
+  </td>
+</tr>

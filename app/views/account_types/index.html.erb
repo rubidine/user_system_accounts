@@ -1,0 +1,15 @@
+<div id="account_type_box">
+  <% @account_types.each do |type| -%>
+    <% div_for type do %>
+      <p class="name">
+        <%= type.name %>
+      </p>
+      <p class="description">
+        <%= type.description %>
+      </p>
+      <p class="signup">
+        <%= link_to 'Signup', new_user_path(:account_type_id => type.id) %>
+      </p>
+    <% end %>
+  <% end -%>
+</div>
