@@ -12,6 +12,13 @@ require File.join(directory, 'ext_lib', 'init.rb')
 # define some routes
 ActionController::Routing::Routes.define_user_system_has_accounts_routes do |map|
   map.resources :account_types
+  map.resources :accounts,
+                :collection => {
+                  :join => :get
+                },
+                :member => {
+                  :renew => :get
+                }
 end
 
 ActiveSupport::Dependencies.register_user_system_has_accounts_extension do
@@ -22,6 +29,12 @@ ActiveSupport::Dependencies.register_user_system_has_accounts_extension do
   # configuration
   UserSystem.extend UserSystemHasAccounts
 
+  # redirects for invalid users
+  UserRedirect.send :include, UserSystemHasAccountsUserRedirect
+  UserRedirect.send :on_redirection, :join_account
+  UserRedirect.send :on_redirection, :renew_account
+
+  # view extensions
   ViewExtender.register '/users/new/extra_fields',
                         'usha_user_new', 
                         {:partial => 'user_fields_for_account_type'}
