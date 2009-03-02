@@ -35,7 +35,8 @@ ActiveSupport::Dependencies.register_user_system_has_accounts_extension do
   UserRedirect.send :on_redirection, :renew_account
 
   # view extensions
-  ViewExtender.register '/users/new/extra_fields',
+  ViewExtender.register '/users/new/form_body',
+                        :top,
                         'usha_user_new', 
                         {:partial => 'user_fields_for_account_type'}
 

@@ -3,9 +3,9 @@ context 'User' do
   setup do
   end
 
-  it 'will create new account if account_type is set and account is not' do
+  it 'will create new account if account type/name set and account is not' do
     at = create_account_type
-    user = create_user(:account_type => at)
+    user = create_user(:account_type => at, :new_account_name => 'testact')
     user.reload
     assert user.account
     assert_equal 1, user.account.users_count

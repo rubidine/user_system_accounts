@@ -9,6 +9,7 @@ module FixtureReplacement
   attributes_for :account do |a|
     a.last_payment_at = Time.now - 2.days
     a.account_type = default_account_type
+    a.name = "TEST ACCOUNT NAME"
   end
 
   attributes_for :account_administrator, :from => :user do |a|

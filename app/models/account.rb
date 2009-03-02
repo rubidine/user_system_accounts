@@ -7,8 +7,10 @@ class Account < ActiveRecord::Base
   belongs_to :account_type, :counter_cache => true
   has_many :users
 
-  # don't let these attributes be assigned via web form bulk assigns
-  attr_protected :last_payment_at, :next_payment_at
+  # don't let any attributes be assigned via web form bulk assigns
+  attr_accessible :name
+
+  before_create :set_default_slug
 
   # is the payment for this account late?
   def overdue?
@@ -19,5 +21,10 @@ class Account < ActiveRecord::Base
   def suspended?
     next_payment_at \
     && (next_payment_at + UserSystem.account_grace_period).to_date < Date.today
+  end
+
+  private
+  def set_default_slug
+    self.slug ||= self.name.downcase.gsub(/[^\w]+/, '-')
   end
 end

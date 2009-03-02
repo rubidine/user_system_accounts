@@ -6,3 +6,18 @@
     <%= select :user, :account_type_id, AccountType.public.by_cost.find(:all).collect{|x| [x.name, x.id]}, :selected => params[:account_type_id] %>
   </td>
 </tr>
+
+<tr>
+  <td colspan="2">
+    <strong>Wan't to sign up with an exising account?  Have the account administrator send an invitation to your email.</strong>
+  </td>
+</tr>
+
+<tr>
+  <th>
+    Account Name
+  </th>
+  <td>
+    <%= text_field :user, :new_account_name %>
+  </td>
+</tr>

@@ -22,4 +22,16 @@ context 'Account' do
     assert @user.errors.on(:account)
   end
 
+  it 'Will not mass-assign attributes' do
+    @account.update_attributes(:users_count => 990, :account_type_id => 700, :last_payment_at => (Date.today + 1), :next_payment_at => (Date.today + 2))
+    @account.reload
+    assert_not_equal 990, @account.users_count
+    assert_not_equal 700, @account.account_type_id
+    assert_not_equal (Date.today + 1), @account.last_payment_at
+    assert_not_equal (Date.today + 2), @account.next_payment_at
+  end
+
+  it 'will set a default slug' do
+    assert @account.slug
+  end
 end
