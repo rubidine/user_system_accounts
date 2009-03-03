@@ -16,8 +16,15 @@ context 'Account' do
   end
 
   it 'Will not allow too many users to join' do
-    @account.update_attribute(:users_count, 5)
-    @user = new_user(:account_id => @account.id)
+    Account.update_all(
+      {:users_count => 5},
+      {:id => @account.id}
+    )
+    @account.reload
+    assert_equal 5, @account.users_count
+    assert_equal 5, @account.account_type.allowed_users
+    @user = User.new :login => 'asdf', :passphrase => 'bcd'
+    @user.account = @account
     @user.valid?
     assert @user.errors.on(:account)
   end

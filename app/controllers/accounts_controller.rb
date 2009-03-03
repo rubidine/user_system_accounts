@@ -1,6 +1,6 @@
 class AccountsController < ApplicationController
 
-  only_for_account_administrator
+  only_for_account_administrator :except => [:join, :new]
   before_filter :load_current_account
   before_filter :user_account_is_current_account
 

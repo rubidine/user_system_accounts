@@ -19,13 +19,19 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+require File.join(File.dirname(__FILE__), '..', 'test_helper')
+
 context 'Sessions Controller' do
   setup do
+    Account.delete_all
+    User.delete_all
+
     @controller = SessionsController.new
     @request = ActionController::TestRequest.new
     @response = ActionController::TestResponse.new
 
     @user = create_account_administrator(:verified => true)
+    @request.host = "#{@user.account.slug}.cardinaltask.com"
   end
 
   it 'should sandbox a user with suspened account' do

@@ -29,6 +29,13 @@ ActiveSupport::Dependencies.register_user_system_has_accounts_extension do
   # configuration
   UserSystem.extend UserSystemHasAccounts
 
+  # login filters
+  ApplicationController.send :include, UserSystemHasAccountsLoginFilters
+  ApplicationController.send :prepend_before_filter, :ensure_account_user_match
+
+  # start sessions based on subdomain
+  SessionsController.send :include, UserSystemHasAccountsSessionsController
+
   # redirects for invalid users
   UserRedirect.send :include, UserSystemHasAccountsUserRedirect
   UserRedirect.send :on_redirection, :join_account

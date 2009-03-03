@@ -6,9 +6,15 @@ context 'User' do
   it 'will create new account if account type/name set and account is not' do
     at = create_account_type
     user = create_user(:account_type => at, :new_account_name => 'testact')
+    User.logger.warn "--CREATED"
     user.reload
+    User.logger.warn "--RELOADED"
     assert user.account
+    User.logger.warn "--ASSERTED"
+    assert_equal 1, user.account.users.count
+    User.logger.warn "--COUNTED"
     assert_equal 1, user.account.users_count
+    User.logger.warn "--FINISHED"
   end
 
   it 'will have account_type denormalized for them if account changes' do

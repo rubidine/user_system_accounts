@@ -16,6 +16,8 @@ module FixtureReplacement
     a.account = default_account
     a.email = "admin@account.com"
     a.login = "account_admin"
+    a.passphrase = "test-test"
+    a.passphrase_confirmation = "test-test"
     a.account_administrator = true
   end
 
