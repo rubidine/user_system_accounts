@@ -2,6 +2,7 @@ module UserSystemHasAccountsLoginFilters
   private
   def self.included kls
     kls.send :extend, ClassMethods
+    kls.send :helper_method, :current_account
   end
 
   def require_account_administrator_login

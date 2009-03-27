@@ -8,7 +8,7 @@ module UserModelHasAccount
     kls.send :belongs_to, :account_type
 
     kls.send :named_scope, :account_administrator, {:conditions => {:account_administrator => true}}
-    kls.send :named_scope, :for_account, lambda{|act| {:conditions => {:account_id => act.id}} }
+    kls.send :named_scope, :for_account, lambda{|act| {:conditions => {:account_id => (act.is_a?(Account) ? act.id : act)}} }
 
     kls.send :attr_accessor, :new_account_name
     kls.send :attr_protected, :account_administrator
