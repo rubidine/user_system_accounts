@@ -4,15 +4,6 @@
 #
 class Account < ActiveRecord::Base
 
-  def self.increment_counter a, b
-    if b.nil? and !caller.first.match(/replace.$/)
-      logger.warn "INCREMENT_COUNTER: #{a}, #{b}"
-      logger.warn caller.join("\n")
-      logger.warn "\n"
-    end
-    super
-  end
-
   belongs_to :account_type, :counter_cache => true
   has_many :users
 
