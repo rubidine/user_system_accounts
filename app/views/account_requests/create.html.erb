@@ -1,0 +1,8 @@
+<% if @req.new_record? -%>
+  <h1>Unable to process request</h1>
+  <ul><% @req.errors.full_messages.each do |msg| -%>
+    <li><%= msg %></li>
+  <% end -%></ul>
+<% else -%>
+  <h1>Request Created</h1>
+<% end -%>

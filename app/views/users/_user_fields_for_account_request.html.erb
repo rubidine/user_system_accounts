@@ -1,0 +1,3 @@
+<% if current_page?(:controller => 'account_requests', :action => 'show') -%>
+  <%= hidden_field :user, :account_request_security_token, :value => @account_request.security_token %>
+<% end -%>

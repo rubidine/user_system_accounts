@@ -10,6 +10,7 @@ class AccountRequest < ActiveRecord::Base
   validate :for_user_or_via_email
 
   before_create :set_security_token_if_via_email
+  before_create :set_approved_by_account_if_via_email
   after_create :send_invitation
 
 
@@ -29,6 +30,14 @@ class AccountRequest < ActiveRecord::Base
     self.approved_by_user = true
   end
 
+  def dummy_user_model
+    User.new(
+      :login => email.match(/(^[^@]+)/)[1],
+      :email => email,
+      :account_id => account_id
+    )
+  end
+
   private
   def via_email?
     email
@@ -46,16 +55,29 @@ class AccountRequest < ActiveRecord::Base
     true
   end
 
+  def set_approved_by_account_if_via_email
+    self.approved_by_account = true if via_email?
+    true
+  end
+
   def send_invitation
-    send_email
+    if via_email?
+      email_invitation
+    else
+      email_request
+    end
   end
 
   def new_security_token
     User.new.send(:generate_security_token)
   end
 
-  def send_email
-#    AccountInvitationMailer.deliver_invitation(self)
+  def email_invitation
+    AccountRequestMailer.deliver_invitation(self)
+  end
+
+  def email_request
+    AccountRequestMailer.deliver_request(self)
   end
 
 end

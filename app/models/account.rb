@@ -6,6 +6,8 @@ class Account < ActiveRecord::Base
 
   belongs_to :account_type, :counter_cache => true
   has_many :users
+  has_many :account_requests
+  has_many :administrators, :class_name => 'User', :conditions => {:account_administrator => true}
 
   # don't let any attributes be assigned via web form bulk assigns
   attr_accessible :name
@@ -26,6 +28,11 @@ class Account < ActiveRecord::Base
   # print the name
   def to_s
     name.to_s
+  end
+
+  # check the difference in current users and max possible users
+  def can_invite_users?
+    account_type.unlimited_users? || users_count < account_type.allowed_users
   end
 
   private

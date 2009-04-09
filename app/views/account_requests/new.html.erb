@@ -1,0 +1,16 @@
+<% form_for @account_request do |ar| -%>
+  <table>
+    <tr>
+      <th><%= ar.label :email %></th>
+      <td><%= ar.text_field :email %></th>
+    </tr>
+    <tr>
+      <th><%= ar.label :message %></th>
+      <td><%= ar.text_field :message, :value => UserSystem.default_account_invite_message %></th>
+    </tr>
+    <tr>
+      <th></th>
+      <td><%= ar.submit 'Invite' %></td>
+    </tr>
+  </table>
+<% end -%>

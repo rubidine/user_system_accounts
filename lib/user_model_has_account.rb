@@ -1,8 +1,10 @@
 module UserModelHasAccount
   def self.included kls
     kls.send :before_validation, :denormalize_account_type
+    kls.send :before_validation, :pull_account_from_account_request
     kls.send :validate, :validate_account_has_space
     kls.send :after_create, :create_account_if_account_type_without_account
+    kls.send :after_create, :complete_account_request
 
     kls.send :belongs_to, :account, :counter_cache => true
     kls.send :belongs_to, :account_type
@@ -11,7 +13,9 @@ module UserModelHasAccount
     kls.send :named_scope, :for_account, lambda{|act| {:conditions => {:account_id => (act.is_a?(Account) ? act.id : act)}} }
 
     kls.send :attr_accessor, :new_account_name
+    kls.send :attr_accessor, :account_request_security_token
     kls.send :attr_protected, :account_administrator
+    kls.send :attr_protected, :account_id
   end
 
   private
@@ -41,6 +45,7 @@ module UserModelHasAccount
   def create_account_if_account_type_without_account
     return true if account
     return true unless account_type
+    return true if account_request_security_token
 
     self.account = Account.new
     # manually write attr_protected fields
@@ -65,6 +70,23 @@ module UserModelHasAccount
       )
       true
     end
+  end
+
+  def pull_account_from_account_request
+    return true unless account_request_security_token
+
+    if @_account_request = AccountRequest.find_by_security_token(
+                             account_request_security_token
+                           )
+      self.account = @_account_request.account
+    end
+  end
+
+  def complete_account_request
+    return true unless @_account_request
+
+    @_account_request.approved_by_user = true
+    @_account_request.save
   end
 
 end

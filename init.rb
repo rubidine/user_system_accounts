@@ -12,13 +12,8 @@ require File.join(directory, 'ext_lib', 'init.rb')
 # define some routes
 ActionController::Routing::Routes.define_user_system_has_accounts_routes do |map|
   map.resources :account_types
-  map.resources :accounts,
-                :collection => {
-                  :join => :get
-                },
-                :member => {
-                  :renew => :get
-                }
+  map.resources :accounts
+  map.resources :account_requests
 end
 
 ActiveSupport::Dependencies.register_user_system_has_accounts_extension do
@@ -45,6 +40,10 @@ ActiveSupport::Dependencies.register_user_system_has_accounts_extension do
   ViewExtender.register '/users/new/form_body',
                         :top,
                         'usha_user_new', 
-                        {:partial => 'user_fields_for_account_type'}
+                        {:partial => 'users/user_fields_for_account_type'}
+  ViewExtender.register '/users/new/form_contents',
+                        :bottom,
+                        'usha_account_request_field', 
+                        {:partial => 'users/user_fields_for_account_request'}
 
 end
