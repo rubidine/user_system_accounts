@@ -9,13 +9,19 @@ module UserModelHasAccount
     kls.send :belongs_to, :account, :counter_cache => true
     kls.send :belongs_to, :account_type
 
+    kls.send :named_scope, :sitewide_administrator, {:conditions => {:sitewide_administrator => true}}
     kls.send :named_scope, :account_administrator, {:conditions => {:account_administrator => true}}
     kls.send :named_scope, :for_account, lambda{|act| {:conditions => {:account_id => (act.is_a?(Account) ? act.id : act)}} }
 
     kls.send :attr_accessor, :new_account_name
     kls.send :attr_accessor, :account_request_security_token
     kls.send :attr_protected, :account_administrator
+    kls.send :attr_protected, :sitewide_administrator
     kls.send :attr_protected, :account_id
+  end
+
+  def account_administrator?
+    read_attribute(:account_administrator) || sitewide_administrator?
   end
 
   private

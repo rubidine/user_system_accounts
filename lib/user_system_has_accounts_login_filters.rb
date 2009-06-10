@@ -14,6 +14,15 @@ module UserSystemHasAccountsLoginFilters
     end
   end
 
+  def require_sistewide_administrator_login
+    if require_user_login and current_user.sitewide_administrator?
+      true
+    else
+      render :template => 'users/requires_sitewide_admin', :status => 403
+      false
+    end
+  end
+
   def current_account
     @usys_account = current_user.account if current_user
     @usys_account ||= Account.find_by_slug(subdomain_key) if subdomain_key
@@ -34,6 +43,12 @@ module UserSystemHasAccountsLoginFilters
     def only_for_account_administrator options={}
       before_filter(options) do |inst|
         inst.send(:require_account_administrator_login)
+      end
+    end
+
+    def only_for_sitewide_administrator options={}
+      before_filter(options) do |inst|
+        inst.send(:require_sitewide_administrator_login)
       end
     end
   end

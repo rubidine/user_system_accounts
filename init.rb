@@ -9,13 +9,6 @@ end
 # Load the extension mojo that hacks into the rails base classes.
 require File.join(directory, 'ext_lib', 'init.rb')
 
-# define some routes
-ActionController::Routing::Routes.define_user_system_has_accounts_routes do |map|
-  map.resources :account_types
-  map.resources :accounts
-  map.resources :account_requests
-end
-
 ActiveSupport::Dependencies.register_user_system_has_accounts_extension do
 
   # associations, callbacks, etc for User model
