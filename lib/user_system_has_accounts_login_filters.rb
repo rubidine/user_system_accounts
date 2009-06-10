@@ -34,6 +34,7 @@ module UserSystemHasAccountsLoginFilters
   end
 
   def ensure_account_user_match
+    puts "ENSURE ACCOUNT USER MATCH"
     if current_account and current_user and current_user.account != current_account
       raise AccountMismatchError, "User: #{current_user.account}/#{current_account}"
     end
