@@ -14,7 +14,7 @@ module UserSystemHasAccountsLoginFilters
     end
   end
 
-  def require_sistewide_administrator_login
+  def require_sitewide_administrator_login
     if require_user_login and current_user.sitewide_administrator?
       true
     else
