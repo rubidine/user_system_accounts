@@ -21,9 +21,6 @@ ActiveSupport::Dependencies.register_user_system_has_accounts_extension do
   ApplicationController.send :include, UserSystemHasAccountsLoginFilters
   ApplicationController.send :prepend_before_filter, :ensure_account_user_match
 
-  # start sessions based on subdomain
-  SessionsController.send :include, UserSystemHasAccountsSessionsController
-
   # redirects for invalid users
   UserRedirect.send :include, UserSystemHasAccountsUserRedirect
   UserRedirect.send :on_redirection, :join_account
@@ -34,9 +31,4 @@ ActiveSupport::Dependencies.register_user_system_has_accounts_extension do
                         :top,
                         'usha_user_new', 
                         {:partial => 'users/user_fields_for_account_type'}
-  ViewExtender.register '/users/new/form_contents',
-                        :bottom,
-                        'usha_account_request_field', 
-                        {:partial => 'users/user_fields_for_account_request'}
-
 end

@@ -1,10 +1,29 @@
+# Copyright (c) 2008 Todd Willey <todd@rubidine.com>
+# 
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+# 
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 module UserModelHasAccount
   def self.included kls
     kls.send :before_validation, :denormalize_account_type
-    kls.send :before_validation, :pull_account_from_account_request
     kls.send :validate, :validate_account_has_space
     kls.send :after_create, :create_account_if_account_type_without_account
-    kls.send :after_create, :complete_account_request
 
     kls.send :belongs_to, :account, :counter_cache => true
     kls.send :belongs_to, :account_type
@@ -14,7 +33,6 @@ module UserModelHasAccount
     kls.send :named_scope, :for_account, lambda{|act| {:conditions => {:account_id => (act.is_a?(Account) ? act.id : act)}} }
 
     kls.send :attr_accessor, :new_account_name
-    kls.send :attr_accessor, :account_request_security_token
     kls.send :attr_protected, :account_administrator
     kls.send :attr_protected, :sitewide_administrator
     kls.send :attr_protected, :account_id
@@ -76,23 +94,6 @@ module UserModelHasAccount
       )
       true
     end
-  end
-
-  def pull_account_from_account_request
-    return true unless account_request_security_token
-
-    if @_account_request = AccountRequest.find_by_security_token(
-                             account_request_security_token
-                           )
-      self.account = @_account_request.account
-    end
-  end
-
-  def complete_account_request
-    return true unless @_account_request
-
-    @_account_request.approved_by_user = true
-    @_account_request.save
   end
 
 end
